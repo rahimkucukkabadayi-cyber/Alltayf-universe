@@ -1,348 +1,336 @@
-const WA = "https://wa.me/905438495887?text=";
-const PRICE_PER_PERSON_PER_NIGHT = 1500;
-const MAX_GUESTS = 4;
-
-/* ====== GEZEGEN BAZLI FİYAT (şimdilik hepsi 1500) ======
-   Yarın sadece buradan tek tek değiştirirsin.
-*/
-const PLANET_PRICES = {
-  sun: 1500,
-  moon: 1500,
-  ship: 1500,
-  antim: 1500,
-
-  mercury: 1500,
-  venus: 1500,
-  earth: 1500,
-  mars: 1500,
-  jupiter: 1500,
-  saturn: 1500,
-  uranus: 1500,
-  neptune: 1500,
-  pluto: 1500,
-};
-
-function getPriceFor(planetId){
-  return PLANET_PRICES[planetId] ?? PRICE_PER_PERSON_PER_NIGHT;
+:root{
+  --txt: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.70);
+  --stroke: rgba(255,255,255,.14);
+  --stroke2: rgba(255,255,255,.22);
+  --shadow: 0 18px 70px rgba(0,0,0,.55);
+  --shadow2: 0 10px 30px rgba(0,0,0,.30);
+  --r: 16px;
 }
 
-/* ====== DOLU TARİH KİLİDİ (localStorage) ====== */
-const LOCK_KEY = "alltayf_stay_locked_ranges_v1";
-function readLocks(){
-  try { return JSON.parse(localStorage.getItem(LOCK_KEY) || "{}"); }
-  catch { return {}; }
+*{box-sizing:border-box}
+html,body{height:100%}
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: url("img/bg-universe.jpg") center / cover no-repeat fixed;
+  color:#fff;
 }
-function writeLocks(obj){
-  localStorage.setItem(LOCK_KEY, JSON.stringify(obj));
+
+.bg{
+  position:fixed; inset:0; z-index:-1;
+  background: url("img/bg-universe.jpg") center/cover no-repeat fixed;
 }
-function overlaps(aIn, aOut, bIn, bOut){
-  const A1 = new Date(aIn+"T00:00:00").getTime();
-  const A2 = new Date(aOut+"T00:00:00").getTime();
-  const B1 = new Date(bIn+"T00:00:00").getTime();
-  const B2 = new Date(bOut+"T00:00:00").getTime();
-  return A1 < B2 && B1 < A2; // [in,out) çakışma
+
+.wrap{width:min(1100px, 92vw); margin:0 auto; padding:0 0}
+
+.bar{
+  position:sticky; top:0; z-index:10;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.06);
 }
-function isRangeAvailable(planetId, inD, outD){
-  const locks = readLocks();
-  const list = locks[planetId] || [];
-  for(const r of list){
-    if(overlaps(inD, outD, r.in, r.out)) return false;
+.bar-inner{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:14px 0;
+}
+.bar-title{font-weight:900; letter-spacing:.10em; font-size:14px}
+.bar-sub{margin-top:6px; color:var(--muted); font-size:12px}
+
+.bar-link{
+  text-decoration:none; color:var(--txt);
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  padding:10px 12px; border-radius:999px;
+  transition:.18s ease; white-space:nowrap;
+}
+.bar-link:hover{
+  transform:translateY(-1px);
+  border-color:var(--stroke2);
+  background:rgba(255,255,255,.09)
+}
+
+.hero{
+  margin:18px 0 12px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  box-shadow: var(--shadow);
+  padding:16px;
+}
+.hero-title{font-size:22px; font-weight:900; letter-spacing:-.01em}
+.hero-desc{margin-top:6px; color:var(--muted); font-size:14px}
+
+.grid10{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:12px;
+  padding: 0 0 18px;
+}
+
+.card10{
+  text-decoration:none; color:var(--txt);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius: var(--r);
+  background: rgba(255,255,255,.05);
+  box-shadow: var(--shadow2);
+  overflow:hidden;
+  transition:.18s ease;
+}
+.card10:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,255,255,.24);
+  background:rgba(255,255,255,.07)
+}
+
+.card10-top{
+  padding:10px 10px;
+  display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.tag{font-weight:900; letter-spacing:.12em; font-size:11px}
+.mini{font-size:12px; color:rgba(255,255,255,.75)}
+
+/* KART GÖRSEL ALANI */
+.card10-img{
+  aspect-ratio: 16/10;
+  width:100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position:relative;
+}
+
+/* Görseli öldürmesin diye daha hafif overlay */
+.card10-img::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.35));
+  pointer-events:none;
+}
+
+.card10-bot{
+  padding:10px 10px 12px;
+  font-size:12px; color:rgba(255,255,255,.75);
+  border-top:1px solid rgba(255,255,255,.06);
+}
+
+/* Footer */
+.foot{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  padding: 14px 0 22px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.foot a{
+  color:var(--txt);
+  text-decoration:none;
+  border-bottom:1px dashed rgba(255,255,255,.35);
+  padding-bottom:2px
+}
+
+/* Modal */
+.modal{
+  position:fixed; inset:0;
+  display:none;
+  align-items:center; justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.68);
+  z-index:50;
+}
+.modal.open{display:flex}
+.modal-card{
+  width:min(1000px, 96vw);
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  max-height: 92vh;
+}
+.modal-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.modal-title{font-weight:900; letter-spacing:.04em}
+.x{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:var(--txt);
+  border-radius:12px;
+  padding:8px 10px;
+  cursor:pointer
+}
+.modal-body{
+  padding:14px;
+  display:grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap:12px;
+
+  max-height: calc(92vh - 56px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gallery{
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  background:rgba(255,255,255,.03);
+  padding:10px;
+}
+.mainpic{
+  aspect-ratio: 16/9;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(0,0,0,.35);
+  background-size:cover;
+  background-position:center;
+}
+.thumbs{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+.thumb{
+  aspect-ratio:1/1;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.28);
+  background-size:cover;
+  background-position:center;
+  cursor:pointer;
+  opacity:.85
+}
+.thumb:hover{opacity:1; border-color:rgba(255,255,255,.22)}
+
+.form{
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  background:rgba(255,255,255,.03);
+  padding:12px;
+  padding-bottom: 120px; /* Alt ödeme barı için alan */
+}
+.row2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
+.field{display:flex; flex-direction:column; gap:6px;}
+label{font-size:12px; color:rgba(255,255,255,.80);}
+
+input,select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.28);
+  color:var(--txt);
+  outline:none;
+}
+input:focus,select:focus{
+  border-color:rgba(255,255,255,.28);
+  background:rgba(0,0,0,.34);
+}
+
+.summary{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  background: rgba(0,0,0,.22);
+  padding:12px;
+  margin-top:10px;
+
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.total{font-weight:900; font-size:18px; letter-spacing:.02em}
+.pay{
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color:var(--txt);
+  padding:11px 14px;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.pay:hover{transform:translateY(-1px); background: rgba(255,255,255,.09)}
+.warn{margin-top:10px; color:rgba(255,220,220,.85); font-size:13px}
+.muted{color:var(--muted); font-size:12px}
+
+/* SABİT ALT BAR */
+.paybar {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 999;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(10,10,12,.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--stroke2);
+  box-shadow: var(--shadow2);
+}
+
+.paybar-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.paybar-total {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.paybar-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #fff;
+  color: #000;
+}
+
+.paybar-btn:active {
+  transform: scale(.98);
+}
+
+/* Responsive */
+@media (max-width: 980px){
+  .grid10{grid-template-columns:repeat(3,1fr)}
+  .modal-body{grid-template-columns:1fr}
+}
+@media (max-width: 560px){
+  .grid10{grid-template-columns:repeat(2,1fr)}
+  .row2{grid-template-columns:1fr}
+  .bar-inner{flex-direction:column; align-items:flex-start}
+  .bar-link{width:100%; text-align:center}
+
+  .summary{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
   }
-  return true;
-}
-function lockDatesAfterPayment(planetId, inD, outD){
-  const locks = readLocks();
-  if(!locks[planetId]) locks[planetId] = [];
-  locks[planetId].push({ in: inD, out: outD });
-  writeLocks(locks);
-}
-
-/* ====== Index: data-wa (varsa) ====== */
-document.querySelectorAll("[data-wa]").forEach(el=>{
-  el.addEventListener("click",(e)=>{
-    e.preventDefault();
-    const name = el.getAttribute("data-wa") || "Alltayf";
-    const msg = encodeURIComponent(`Selam Rahim, ${name} hakkında bilgi almak istiyorum.`);
-    window.open(WA + msg, "_blank", "noopener");
-  });
-});
-
-/* ====== Stay sayfası elemanları ====== */
-const planetGrid = document.getElementById("planetGrid");
-const modal = document.getElementById("modal");
-const mTitle = document.getElementById("mTitle");
-const mClose = document.getElementById("mClose");
-const mainPic = document.getElementById("mainPic");
-const thumbs = document.getElementById("thumbs");
-
-const checkin = document.getElementById("checkin");
-const checkout = document.getElementById("checkout");
-const guests = document.getElementById("guests");
-const totalEl = document.getElementById("total");
-const warn = document.getElementById("warn");
-const form = document.getElementById("form");
-
-// Sabit alt bar toplam (id="payTotal" önerilir)
-const payTotalEl = document.getElementById("payTotal") || document.querySelector(".paybar-total");
-
-// Alt bar butonu (id="payBtn" önerilir)
-const payBtn = document.getElementById("payBtn") || document.querySelector(".paybar-btn");
-
-let selectedPlanet = null;
-
-/* ====== Tiny house gezegenleri + özel kartlar ====== */
-const TINY_PLANETS = [
-  { id:"sun",   name:"Güneş",       mini:"Merkez", cls:"planet-sun",   cover:"img/gunes.png" },
-  { id:"moon",  name:"Ay",          mini:"Yoldaş", cls:"planet-moon",  cover:"img/yildiz.png" },
-  { id:"ship",  name:"Uzay Gemisi", mini:"Geçit",  cls:"planet-ship",  cover:"img/uzay-gemisi.png" },
-  { id:"antim", name:"Antimadde",   mini:"Eşik",   cls:"planet-antim", cover:"img/antimadde.png" },
-
-  { id:"mercury", name:"Merkür",  mini:"Hız",   cls:"planet-mercury", cover:"img/alltayf-tech.png" },
-  { id:"venus",   name:"Venüs",   mini:"Sis",   cls:"planet-venus",   cover:"img/alltayf-aura.png" },
-  { id:"earth",   name:"Dünya",   mini:"Yaşam", cls:"planet-earth",   cover:"img/alltayf-farm.png" },
-  { id:"mars",    name:"Mars",    mini:"Ateş",  cls:"planet-mars",    cover:"img/alltayf-build.png" },
-  { id:"jupiter", name:"Jüpiter", mini:"Dev",   cls:"planet-jupiter", cover:"img/alltayf-event.png" },
-  { id:"saturn",  name:"Satürn",  mini:"Halka", cls:"planet-saturn",  cover:"img/alltayf-stone.png" },
-  { id:"uranus",  name:"Uranüs",  mini:"Soğuk", cls:"planet-uranus",  cover:"img/alltayf-energy.png" },
-  { id:"neptune", name:"Neptün",  mini:"Derin", cls:"planet-neptune", cover:"img/alltayf-triad.png" },
-  { id:"pluto",   name:"Plüton",  mini:"Uzak",  cls:"planet-pluto",   cover:"img/alltayf-drill.png" },
-];
-
-/* ====== 4 foto seti ====== */
-function photoSet(p){
-  const core = p?.cover || "img/bg-universe.jpg";
-  const imgs = [
-    core,
-    "img/gunes.png",
-    "img/uzay-gemisi.png",
-    "img/antimadde.png",
-  ];
-  const overlays = [
-    `linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.45))`,
-    `linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.50))`,
-    `linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.48))`,
-    `linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,.55))`,
-  ];
-  return imgs.map((src, i)=> `${overlays[i]}, url("${src}")`);
-}
-
-/* ====== Tarih/hesap yardımcıları ====== */
-function isoToday(){
-  const d=new Date();
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,"0");
-  const day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-function addDays(iso, n){
-  const d=new Date(iso+"T00:00:00");
-  d.setDate(d.getDate()+n);
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,"0");
-  const day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-function diffNights(a,b){
-  const d1=new Date(a+"T00:00:00");
-  const d2=new Date(b+"T00:00:00");
-  return Math.round((d2-d1)/(1000*60*60*24));
-}
-function fmtTL(n){ return new Intl.NumberFormat("tr-TR").format(n) + " TL"; }
-
-function setWarn(msg, ok=false){
-  if(!warn) return;
-  warn.textContent = msg;
-  warn.style.color = ok ? "rgba(180,255,210,.85)" : "rgba(255,220,220,.85)";
-}
-
-/* ====== Grid ====== */
-function renderStayGrid(){
-  if(!planetGrid) return;
-  planetGrid.innerHTML = "";
-
-  TINY_PLANETS.forEach(p=>{
-    const a=document.createElement("a");
-    a.className="card10";
-    a.href="#";
-
-    const bgStyle = p.cover ? `background-image:url('${p.cover}')` : "";
-
-    a.innerHTML=`
-      <div class="card10-top">
-        <span class="tag">${p.name.toUpperCase()}</span>
-        <span class="mini">${p.mini}</span>
-      </div>
-      <div class="card10-img ${p.cls}" style="${bgStyle}"></div>
-      <div class="card10-bot">Tiny house • seç ve incele</div>
-    `;
-
-    a.addEventListener("click",(e)=>{ e.preventDefault(); openPlanet(p); });
-    planetGrid.appendChild(a);
-  });
-}
-
-/* ====== Modal aç/kapat ====== */
-function openPlanet(p){
-  selectedPlanet = p;
-  if(mTitle) mTitle.textContent = `${p.name} — Rezervasyon`;
-
-  const t = isoToday();
-  if(checkin){
-    checkin.min = t;
-    checkin.value = t;
+  .pay{
+    width: 100%;
+    text-align: center;
   }
-  if(checkout){
-    checkout.min = addDays(t,1);
-    checkout.value = addDays(t,1);
-  }
-  if(guests) guests.value = "2";
-
-  const photos = photoSet(p);
-  if(mainPic) mainPic.style.backgroundImage = photos[0];
-
-  if(thumbs){
-    thumbs.innerHTML = "";
-    photos.forEach((bg, i)=>{
-      const d=document.createElement("div");
-      d.className="thumb";
-      d.style.backgroundImage = bg;
-      d.title = `Fotoğraf ${i+1}`;
-      d.addEventListener("click", ()=> { if(mainPic) mainPic.style.backgroundImage = bg; });
-      thumbs.appendChild(d);
-    });
-  }
-
-  recalc();
-  if(modal) modal.classList.add("open");
 }
-
-function closeModal(){
-  if(modal) modal.classList.remove("open");
-  selectedPlanet = null;
+@media (max-width: 360px){
+  .grid10{grid-template-columns:1fr}
 }
-
-if(mClose) mClose.addEventListener("click", closeModal);
-if(modal) modal.addEventListener("click",(e)=>{ if(e.target===modal) closeModal(); });
-
-/* ====== Hesaplama + doluluk kontrolü ====== */
-function recalc(){
-  if(!selectedPlanet) return;
-  if(!checkin || !checkout || !guests || !totalEl) return;
-
-  const inD = checkin.value;
-  const outD = checkout.value;
-  const gRaw = parseInt(guests.value||"1",10);
-  const g = Math.max(1, Math.min(gRaw, MAX_GUESTS));
-
-  if(!inD || !outD){
-    totalEl.textContent="0 TL";
-    if(payTotalEl) payTotalEl.textContent="0 TL";
-    setWarn("Tarih seçmelisin.");
-    return;
-  }
-
-  const nights = diffNights(inD,outD);
-  if(nights<=0){
-    totalEl.textContent="0 TL";
-    if(payTotalEl) payTotalEl.textContent="0 TL";
-    setWarn("Çıkış tarihi girişten sonra olmalı.");
-    return;
-  }
-
-  if(!isRangeAvailable(selectedPlanet.id, inD, outD)){
-    totalEl.textContent="0 TL";
-    if(payTotalEl) payTotalEl.textContent="0 TL";
-    setWarn("Bu tarihler dolu. Başka tarih seç.");
-    return;
-  }
-
-  const price = getPriceFor(selectedPlanet.id);
-  const total = nights * g * price;
-
-  const t = fmtTL(total);
-  totalEl.textContent = t;
-  if(payTotalEl) payTotalEl.textContent = t;
-
-  // "Kişi başı gecelik ..." metni (id varsa günceller)
-  document.getElementById("calcNote")?.textContent = `Kişi başı gecelik ${fmtTL(price)}`;
-
-  setWarn(`Uygun ✔ ${nights} gece • ${g} kişi`, true);
-}
-
-if(checkin) checkin.addEventListener("change",()=>{
-  const minOut = addDays(checkin.value,1);
-  if(checkout){
-    checkout.min = minOut;
-    if(checkout.value < minOut) checkout.value = minOut;
-  }
-  recalc();
-});
-if(checkout) checkout.addEventListener("change", recalc);
-if(guests) guests.addEventListener("change", recalc);
-
-/* ====== Ödeme varsay + kilitle + WhatsApp ====== */
-function handlePaymentAssumed(){
-  if(!selectedPlanet) return;
-
-  const inD = checkin?.value;
-  const outD = checkout?.value;
-  if(!inD || !outD){ setWarn("Tarih seçmelisin."); return; }
-
-  const nights = diffNights(inD, outD);
-  if(nights<=0){ setWarn("Çıkış tarihi girişten sonra olmalı."); return; }
-
-  if(!isRangeAvailable(selectedPlanet.id, inD, outD)){
-    setWarn("Bu tarihler dolu. Başka tarih seç.");
-    return;
-  }
-
-  const fullname = document.getElementById("fullname")?.value?.trim() || "";
-  const email = document.getElementById("email")?.value?.trim() || "";
-  const phone = document.getElementById("phone")?.value?.trim() || "";
-  const tc = document.getElementById("tc")?.value?.trim() || "";
-  const address = document.getElementById("address")?.value?.trim() || "";
-
-  if(tc && tc.length !== 11){ setWarn("TC Kimlik No 11 hane olmalı."); return; }
-
-  lockDatesAfterPayment(selectedPlanet.id, inD, outD);
-
-  alert("Ödeme alındı varsayıldı ✅\nTarihler kilitlendi.");
-
-  const price = getPriceFor(selectedPlanet.id);
-  const total = nights * (parseInt(guests?.value || "1", 10)) * price;
-
-  const msg = encodeURIComponent(
-    `ÖDEME ALINDI ✅\n`+
-    `Gezegen: ${selectedPlanet.name}\n`+
-    `Giriş: ${inD}\n`+
-    `Çıkış: ${outD}\n`+
-    `Kişi: ${guests?.value || ""}\n`+
-    (fullname ? `Ad Soyad: ${fullname}\n` : "")+
-    (email ? `E-posta: ${email}\n` : "")+
-    (phone ? `Telefon: ${phone}\n` : "")+
-    (tc ? `TC: ${tc}\n` : "")+
-    (address ? `Adres: ${address}\n` : "")+
-    `Kişi başı gecelik: ${fmtTL(price)}\n`+
-    `Toplam: ${fmtTL(total)}`
-  );
-  window.open(WA + msg, "_blank", "noopener");
-
-  closeModal();
-  renderStayGrid();
-}
-
-if(form){
-  form.addEventListener("submit",(e)=>{
-    e.preventDefault();
-    handlePaymentAssumed();
-  });
-}
-if(payBtn){
-  payBtn.addEventListener("click",(e)=>{
-    e.preventDefault();
-    handlePaymentAssumed();
-  });
-}
-
-/* ====== Başlat ====== */
-if(planetGrid) renderStayGrid();
