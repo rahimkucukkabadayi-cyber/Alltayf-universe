@@ -10,28 +10,35 @@
 
 *{box-sizing:border-box}
 html,body{height:100%}
-body {
-  margin: 0;
+
+body{
+  margin:0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: url("img/bg-universe.jpg") center / cover no-repeat fixed;
-  color: #fff;
+  color:#fff;
 }
 
+/* Arka plan katmanı (istersen sadece body de yeter) */
 .bg{
   position:fixed; inset:0; z-index:-1;
-  url("bg-universe.jpg") center/cover no-repeat;
+  background: url("img/bg-universe.jpg") center/cover no-repeat fixed;
 }
 
 .wrap{width:min(1100px, 92vw); margin:0 auto; padding:0 0}
+
 .bar{
   position:sticky; top:0; z-index:10;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom:1px solid rgba(255,255,255,.06);
 }
-.bar-inner{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0;}
+.bar-inner{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:14px 0;
+}
 .bar-title{font-weight:900; letter-spacing:.10em; font-size:14px}
 .bar-sub{margin-top:6px; color:var(--muted); font-size:12px}
+
 .bar-link{
   text-decoration:none; color:var(--txt);
   border:1px solid var(--stroke);
@@ -39,7 +46,11 @@ body {
   padding:10px 12px; border-radius:999px;
   transition:.18s ease; white-space:nowrap;
 }
-.bar-link:hover{transform:translateY(-1px); border-color:var(--stroke2); background:rgba(255,255,255,.09)}
+.bar-link:hover{
+  transform:translateY(-1px);
+  border-color:var(--stroke2);
+  background:rgba(255,255,255,.09)
+}
 
 .hero{
   margin:18px 0 12px;
@@ -58,7 +69,7 @@ body {
   padding: 0 0 18px;
 }
 
-/* Kutular: görseldeki gibi */
+/* Kart */
 .card10{
   text-decoration:none; color:var(--txt);
   border:1px solid rgba(255,255,255,.12);
@@ -68,14 +79,18 @@ body {
   overflow:hidden;
   transition:.18s ease;
 }
-.card10:hover{transform:translateY(-3px); border-color:rgba(255,255,255,.24); background:rgba(255,255,255,.07)}
+.card10:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,255,255,.24);
+  background:rgba(255,255,255,.07)
+}
 
 .card10-top{
   padding:10px 10px;
   display:flex; justify-content:space-between; align-items:baseline; gap:10px;
   border-bottom:1px solid rgba(255,255,255,.08);
-  }
-  
+}
+
 .tag{font-weight:900; letter-spacing:.12em; font-size:11px}
 .mini{font-size:12px; color:rgba(255,255,255,.75)}
 
@@ -86,11 +101,11 @@ body {
   border-top:1px solid rgba(255,255,255,.06);
 }
 
-/* Güneş kartı parlasın */
+/* Güneş kartı */
 .card10.sun{border-color:rgba(255,220,120,.28)}
 .card10.sun:hover{border-color:rgba(255,220,120,.42)}
 
-/* Gezegen görsel efektleri (şimdilik CSS) */
+/* Gezegen (Stay sayfası gridinde kullanılıyor) */
 .planet-sun{
   background:
     radial-gradient(circle at 40% 40%, rgba(255,220,120,.95), rgba(255,120,0,.55) 45%, rgba(50,0,0,.25) 75%),
@@ -101,7 +116,15 @@ body {
 .planet-venus{background: radial-gradient(circle at 40% 40%, rgba(255,220,160,.70), rgba(190,140,90,.55) 55%, rgba(20,10,5,.25) 80%), rgba(0,0,0,.15);}
 .planet-earth{background: radial-gradient(circle at 42% 40%, rgba(90,190,255,.75), rgba(30,120,255,.55) 45%, rgba(10,20,40,.35) 75%), radial-gradient(circle at 55% 55%, rgba(60,255,140,.35), transparent 45%), rgba(0,0,0,.15);}
 .planet-mars{background: radial-gradient(circle at 42% 40%, rgba(255,120,80,.70), rgba(180,50,20,.55) 55%, rgba(30,10,10,.30) 80%), rgba(0,0,0,.15);}
-.planet-jupiter{background: radial-gradient(circle at 40% 40%, rgba(235,200,160,.65), rgba(170,120,85,.55) 60%, rgba(20,10,8,.25) 85%), (90deg, rgba(255,255,255,.08), transparent 40%, rgba(255,255,255,.06)), rgba(0,0,0,.15);}
+
+/* BURASI HATALIYDI → düzeltildi */
+.planet-jupiter{
+  background:
+    radial-gradient(circle at 40% 40%, rgba(235,200,160,.65), rgba(170,120,85,.55) 60%, rgba(20,10,8,.25) 85%),
+    linear-gradient(90deg, rgba(255,255,255,.08), transparent 40%, rgba(255,255,255,.06)),
+    rgba(0,0,0,.15);
+}
+
 .planet-saturn{background: radial-gradient(circle at 42% 40%, rgba(235,205,150,.65), rgba(160,120,80,.55) 60%, rgba(20,10,8,.25) 85%), conic-gradient(from 20deg, rgba(255,255,255,.18), transparent 25%, rgba(255,255,255,.10), transparent 55%, rgba(255,255,255,.12)), rgba(0,0,0,.15);}
 .planet-uranus{background: radial-gradient(circle at 42% 40%, rgba(170,240,255,.70), rgba(80,160,220,.55) 60%, rgba(10,20,35,.30) 85%), rgba(0,0,0,.15);}
 .planet-neptune{background: radial-gradient(circle at 42% 40%, rgba(120,180,255,.65), rgba(30,80,200,.55) 60%, rgba(10,15,35,.35) 85%), rgba(0,0,0,.15);}
@@ -114,10 +137,22 @@ body {
   color: var(--muted);
   font-size: 13px;
 }
-.foot a{color:var(--txt); text-decoration:none; border-bottom:1px dashed rgba(255,255,255,.35); padding-bottom:2px}
+.foot a{
+  color:var(--txt);
+  text-decoration:none;
+  border-bottom:1px dashed rgba(255,255,255,.35);
+  padding-bottom:2px
+}
 
 /* Modal */
-.modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:18px; background:rgba(0,0,0,.68); z-index:50;}
+.modal{
+  position:fixed; inset:0;
+  display:none;
+  align-items:center; justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.68);
+  z-index:50;
+}
 .modal.open{display:flex}
 .modal-card{
   width:min(1000px, 96vw);
@@ -126,21 +161,74 @@ body {
   box-shadow: var(--shadow);
   overflow:hidden;
 }
-.modal-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px; border-bottom:1px solid rgba(255,255,255,.08);}
+.modal-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
 .modal-title{font-weight:900; letter-spacing:.04em}
-.x{border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:var(--txt); border-radius:12px; padding:8px 10px; cursor:pointer}
-.modal-body{padding:14px; display:grid; grid-template-columns: 1.1fr .9fr; gap:12px;}
+.x{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:var(--txt);
+  border-radius:12px;
+  padding:8px 10px;
+  cursor:pointer
+}
+.modal-body{
+  padding:14px;
+  display:grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap:12px;
+}
 
-.gallery{border:1px solid rgba(255,255,255,.10); border-radius:16px; background:rgba(255,255,255,.03); padding:10px;}
-.mainpic{aspect-ratio: 16/9; border-radius:14px; border:1px solid rgba(255,255,255,.08); background:rgba(0,0,0,.35); background-size:cover; background-position:center;}
-.thumbs{margin-top:10px; display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
-.thumb{aspect-ratio:1/1; border-radius:12px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.28); background-size:cover; background-position:center; cursor:pointer; opacity:.85}
+.gallery{
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  background:rgba(255,255,255,.03);
+  padding:10px;
+}
+.mainpic{
+  aspect-ratio: 16/9;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(0,0,0,.35);
+  background-size:cover;
+  background-position:center;
+}
+.thumbs{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+.thumb{
+  aspect-ratio:1/1;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(0,0,0,.28);
+  background-size:cover;
+  background-position:center;
+  cursor:pointer;
+  opacity:.85
+}
 .thumb:hover{opacity:1; border-color:rgba(255,255,255,.22)}
 
-.form{border:1px solid rgba(255,255,255,.10); border-radius:16px; background:rgba(255,255,255,.03); padding:12px;}
-.row2{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;}
+.form{
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  background:rgba(255,255,255,.03);
+  padding:12px;
+}
+.row2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
 .field{display:flex; flex-direction:column; gap:6px;}
 label{font-size:12px; color:rgba(255,255,255,.80);}
+
 input,select{
   width:100%;
   padding:10px 12px;
@@ -150,7 +238,10 @@ input,select{
   color:var(--txt);
   outline:none;
 }
-input:focus,select:focus{border-color:rgba(255,255,255,.28); background:rgba(0,0,0,.34);}
+input:focus,select:focus{
+  border-color:rgba(255,255,255,.28);
+  background:rgba(0,0,0,.34);
+}
 
 .summary{
   display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -164,11 +255,13 @@ input:focus,select:focus{border-color:rgba(255,255,255,.28); background:rgba(0,0
 .pay{
   border-radius:14px;
   border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
   color:var(--txt);
   padding:11px 14px;
   cursor:pointer;
+  transition:.15s ease;
 }
-.pay:hover{transform:translateY(-1px)}
+.pay:hover{transform:translateY(-1px); background: rgba(255,255,255,.09)}
 .warn{margin-top:10px; color:rgba(255,220,220,.85); font-size:13px}
 .muted{color:var(--muted); font-size:12px}
 
@@ -186,11 +279,13 @@ input:focus,select:focus{border-color:rgba(255,255,255,.28); background:rgba(0,0
 @media (max-width: 360px){
   .grid10{grid-template-columns:1fr}
 }
+
 /* === TAYF GÖRSELLERİ === */
 .card10-img{
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  position:relative;
 }
 
 /* Tayf görselleri */
@@ -210,6 +305,6 @@ input:focus,select:focus{border-color:rgba(255,255,255,.28); background:rgba(0,0
   content:"";
   position:absolute;
   inset:0;
-  }
-.card10-img{ position:relative; }
-
+  background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55));
+  pointer-events:none;
+}
