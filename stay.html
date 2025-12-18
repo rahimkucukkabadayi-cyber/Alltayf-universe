@@ -127,5 +127,36 @@
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
   </script>
+  <script>
+const MANIFEST_LINES = [
+  "Evren, kısa bir konaklamada bile iz bırakır.",
+  "Kapıyı açtığında zaman yavaşlar, sen merkeze geçersin."
+];
+
+function injectManifest() {
+  document.querySelectorAll("*").forEach(el => {
+    const text = el.textContent?.trim();
+    if (text === "Uygun ✓ 1 gece · 2 kişi" || text === "Uygun / 1 gece · 2 kişi") {
+
+      // daha önce eklenmişse tekrar ekleme
+      if (el.nextElementSibling?.classList?.contains("manifest")) return;
+
+      const manifest = document.createElement("div");
+      manifest.className = "manifest";
+      manifest.innerHTML = `
+        <span>${MANIFEST_LINES[0]}</span>
+        <span>${MANIFEST_LINES[1]}</span>
+      `;
+
+      el.insertAdjacentElement("afterend", manifest);
+    }
+  });
+}
+
+// Sayfa yüklenince ve dinamik güncellemelerde çalışsın
+document.addEventListener("DOMContentLoaded", injectManifest);
+setTimeout(injectManifest, 500);
+setTimeout(injectManifest, 1500);
+</script>
 </body>
 </html>
