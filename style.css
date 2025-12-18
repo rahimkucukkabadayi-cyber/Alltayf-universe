@@ -194,4 +194,31 @@ input:focus,select:focus{border-color:rgba(255,255,255,.28); background:rgba(0,0
 @media (max-width: 360px){
   .grid10{grid-template-columns:1fr}
 }
+/* === TAYF GÖRSELLERİ === */
+.card10-img{
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Tayf görselleri */
+.tayf-stay   { background-image: url("img/alltayf-stay.png"); }
+.tayf-farm   { background-image: url("img/alltayf-farm.png"); }
+.tayf-build  { background-image: url("img/alltayf-build.png"); }
+.tayf-stone  { background-image: url("img/alltayf-stone.png"); }
+.tayf-energy { background-image: url("img/alltayf-energy.png"); }
+.tayf-drill  { background-image: url("img/alltayf-drill.png"); }
+.tayf-tech   { background-image: url("img/alltayf-tech.png"); }
+.tayf-event  { background-image: url("img/alltayf-event.png"); }
+.tayf-aura   { background-image: url("img/alltayf-aura.png"); }
+.tayf-triad  { background-image: url("img/alltayf-triad.png"); }
+
+/* Yazıların okunaklı olması için koyu katman */
+.card10-img::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55));
+}
+.card10-img{ position:relative; }
 
