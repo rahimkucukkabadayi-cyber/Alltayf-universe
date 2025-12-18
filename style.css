@@ -308,3 +308,37 @@ input:focus,select:focus{
   background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55));
   pointer-events:none;
 }
+/* === MOBİLDE MODAL ALT KISIM GÖRÜNMÜYOR SORUNU ÇÖZÜMÜ === */
+.modal-card{
+  max-height: 92vh;
+  overflow: hidden;
+}
+
+.modal-body{
+  max-height: calc(92vh - 56px); /* modal-head yüksekliği payı */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ödeme alanı her zaman görünür olsun */
+.summary{
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Küçük ekranda buton alta gelsin, rahat tıklansın */
+@media (max-width: 560px){
+  .summary{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .pay{
+    width: 100%;
+    text-align: center;
+  }
+}
