@@ -19,9 +19,7 @@ body {
 
 .bg{
   position:fixed; inset:0; z-index:-1;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.82)),
-    url("bg-universe.jpg") center/cover no-repeat;
+  url("bg-universe.jpg") center/cover no-repeat;
 }
 
 .wrap{width:min(1100px, 92vw); margin:0 auto; padding:0 0}
@@ -29,7 +27,6 @@ body {
   position:sticky; top:0; z-index:10;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  background: linear-gradient(180deg, rgba(0,0,0,.62), rgba(0,0,0,.14));
   border-bottom:1px solid rgba(255,255,255,.06);
 }
 .bar-inner{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0;}
@@ -48,7 +45,6 @@ body {
   margin:18px 0 12px;
   border:1px solid rgba(255,255,255,.10);
   border-radius:18px;
-  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
   box-shadow: var(--shadow);
   padding:16px;
 }
@@ -78,8 +74,8 @@ body {
   padding:10px 10px;
   display:flex; justify-content:space-between; align-items:baseline; gap:10px;
   border-bottom:1px solid rgba(255,255,255,.08);
-  background: linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,.08));
-}
+  }
+  
 .tag{font-weight:900; letter-spacing:.12em; font-size:11px}
 .mini{font-size:12px; color:rgba(255,255,255,.75)}
 
@@ -88,7 +84,6 @@ body {
   padding:10px 10px 12px;
   font-size:12px; color:rgba(255,255,255,.75);
   border-top:1px solid rgba(255,255,255,.06);
-  background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.22));
 }
 
 /* Güneş kartı parlasın */
@@ -106,7 +101,7 @@ body {
 .planet-venus{background: radial-gradient(circle at 40% 40%, rgba(255,220,160,.70), rgba(190,140,90,.55) 55%, rgba(20,10,5,.25) 80%), rgba(0,0,0,.15);}
 .planet-earth{background: radial-gradient(circle at 42% 40%, rgba(90,190,255,.75), rgba(30,120,255,.55) 45%, rgba(10,20,40,.35) 75%), radial-gradient(circle at 55% 55%, rgba(60,255,140,.35), transparent 45%), rgba(0,0,0,.15);}
 .planet-mars{background: radial-gradient(circle at 42% 40%, rgba(255,120,80,.70), rgba(180,50,20,.55) 55%, rgba(30,10,10,.30) 80%), rgba(0,0,0,.15);}
-.planet-jupiter{background: radial-gradient(circle at 40% 40%, rgba(235,200,160,.65), rgba(170,120,85,.55) 60%, rgba(20,10,8,.25) 85%), linear-gradient(90deg, rgba(255,255,255,.08), transparent 40%, rgba(255,255,255,.06)), rgba(0,0,0,.15);}
+.planet-jupiter{background: radial-gradient(circle at 40% 40%, rgba(235,200,160,.65), rgba(170,120,85,.55) 60%, rgba(20,10,8,.25) 85%), (90deg, rgba(255,255,255,.08), transparent 40%, rgba(255,255,255,.06)), rgba(0,0,0,.15);}
 .planet-saturn{background: radial-gradient(circle at 42% 40%, rgba(235,205,150,.65), rgba(160,120,80,.55) 60%, rgba(20,10,8,.25) 85%), conic-gradient(from 20deg, rgba(255,255,255,.18), transparent 25%, rgba(255,255,255,.10), transparent 55%, rgba(255,255,255,.12)), rgba(0,0,0,.15);}
 .planet-uranus{background: radial-gradient(circle at 42% 40%, rgba(170,240,255,.70), rgba(80,160,220,.55) 60%, rgba(10,20,35,.30) 85%), rgba(0,0,0,.15);}
 .planet-neptune{background: radial-gradient(circle at 42% 40%, rgba(120,180,255,.65), rgba(30,80,200,.55) 60%, rgba(10,15,35,.35) 85%), rgba(0,0,0,.15);}
@@ -128,7 +123,6 @@ body {
   width:min(1000px, 96vw);
   border-radius:18px;
   border:1px solid rgba(255,255,255,.12);
-  background: linear-gradient(180deg, rgba(20,20,30,.92), rgba(10,10,16,.92));
   box-shadow: var(--shadow);
   overflow:hidden;
 }
@@ -170,7 +164,6 @@ input:focus,select:focus{border-color:rgba(255,255,255,.28); background:rgba(0,0
 .pay{
   border-radius:14px;
   border:1px solid rgba(255,255,255,.18);
-  background: linear-gradient(180deg, rgba(170,120,255,.22), rgba(0,220,255,.14));
   color:var(--txt);
   padding:11px 14px;
   cursor:pointer;
@@ -217,7 +210,6 @@ input:focus,select:focus{border-color:rgba(255,255,255,.28); background:rgba(0,0
   content:"";
   position:absolute;
   inset:0;
-  background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55));
-}
+  }
 .card10-img{ position:relative; }
 
