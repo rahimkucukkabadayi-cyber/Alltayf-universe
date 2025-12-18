@@ -1,17 +1,49 @@
 const WA = "https://wa.me/905438495887?text=";
 const PRICE_PER_PERSON_PER_NIGHT = 1500;
+const MAX_GUESTS = 4;
 
-// Index: tayf kartları WhatsApp (Stay hariç)
+/* ====== DOLU TARİH KİLİDİ (localStorage) ====== */
+const LOCK_KEY = "alltayf_stay_locked_ranges_v1";
+function readLocks(){
+  try { return JSON.parse(localStorage.getItem(LOCK_KEY) || "{}"); }
+  catch { return {}; }
+}
+function writeLocks(obj){
+  localStorage.setItem(LOCK_KEY, JSON.stringify(obj));
+}
+function overlaps(aIn, aOut, bIn, bOut){
+  const A1 = new Date(aIn+"T00:00:00").getTime();
+  const A2 = new Date(aOut+"T00:00:00").getTime();
+  const B1 = new Date(bIn+"T00:00:00").getTime();
+  const B2 = new Date(bOut+"T00:00:00").getTime();
+  return A1 < B2 && B1 < A2; // [in,out) çakışma
+}
+function isRangeAvailable(planetId, inD, outD){
+  const locks = readLocks();
+  const list = locks[planetId] || [];
+  for(const r of list){
+    if(overlaps(inD, outD, r.in, r.out)) return false;
+  }
+  return true;
+}
+function lockDatesAfterPayment(planetId, inD, outD){
+  const locks = readLocks();
+  if(!locks[planetId]) locks[planetId] = [];
+  locks[planetId].push({ in: inD, out: outD });
+  writeLocks(locks);
+}
+
+/* ====== Index: data-wa (varsa) ====== */
 document.querySelectorAll("[data-wa]").forEach(el=>{
   el.addEventListener("click",(e)=>{
     e.preventDefault();
-    const name = el.getAttribute("data-wa");
+    const name = el.getAttribute("data-wa") || "Alltayf";
     const msg = encodeURIComponent(`Selam Rahim, ${name} hakkında bilgi almak istiyorum.`);
     window.open(WA + msg, "_blank", "noopener");
   });
 });
 
-// Stay sayfası: gezegenler
+/* ====== Stay sayfası elemanları ====== */
 const planetGrid = document.getElementById("planetGrid");
 const modal = document.getElementById("modal");
 const mTitle = document.getElementById("mTitle");
@@ -26,25 +58,27 @@ const totalEl = document.getElementById("total");
 const warn = document.getElementById("warn");
 const form = document.getElementById("form");
 
+// Eğer ayrı buton kullandıysan desteklesin
+const payBtn = document.getElementById("payBtn");
+
 let selectedPlanet = null;
 
-// Tiny house gezegenleri (istersen adları değiştiririz)
+/* ====== Tiny house gezegenleri ====== */
 const TINY_PLANETS = [
-  { id:"mercury", name:"Merkür", mini:"Hız", cls:"planet-mercury" },
-  { id:"venus",   name:"Venüs",  mini:"Sis", cls:"planet-venus" },
+  { id:"mercury", name:"Merkür", mini:"Hız",   cls:"planet-mercury" },
+  { id:"venus",   name:"Venüs",  mini:"Sis",   cls:"planet-venus" },
   { id:"earth",   name:"Dünya",  mini:"Yaşam", cls:"planet-earth" },
-  { id:"mars",    name:"Mars",   mini:"Ateş", cls:"planet-mars" },
-  { id:"jupiter", name:"Jüpiter",mini:"Dev", cls:"planet-jupiter" },
+  { id:"mars",    name:"Mars",   mini:"Ateş",  cls:"planet-mars" },
+  { id:"jupiter", name:"Jüpiter",mini:"Dev",   cls:"planet-jupiter" },
   { id:"saturn",  name:"Satürn", mini:"Halka", cls:"planet-saturn" },
   { id:"uranus",  name:"Uranüs", mini:"Soğuk", cls:"planet-uranus" },
   { id:"neptune", name:"Neptün", mini:"Derin", cls:"planet-neptune" },
-  { id:"pluto",   name:"Plüton", mini:"Uzak", cls:"planet-pluto" },
+  { id:"pluto",   name:"Plüton", mini:"Uzak",  cls:"planet-pluto" },
 ];
 
-// Şimdilik 4 foto yerine “placeholder” görsel kullanıyoruz.
-// Sen sonra /img klasörüne gerçek foto koyunca burada URL’leri değiştiririz.
-function photoSet(planetId){
-  // aynı görseli farklı açı gibi göstermek için degrade çeşitlendiriyoruz
+/* ====== 4 foto (şimdilik placeholder) ====== */
+/* NOT: Eğer senin bg dosyan img/bg-universe.jpg ise alttaki yolu değiştir: url("img/bg-universe.jpg") */
+function photoSet(){
   const base = [
     `linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55)), radial-gradient(circle at 35% 35%, rgba(255,255,255,.20), transparent 55%)`,
     `linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.60)), radial-gradient(circle at 70% 30%, rgba(255,255,255,.18), transparent 60%)`,
@@ -54,6 +88,7 @@ function photoSet(planetId){
   return base.map(g => `${g}, url("bg-universe.jpg")`);
 }
 
+/* ====== Tarih/hesap yardımcıları ====== */
 function isoToday(){
   const d=new Date();
   const y=d.getFullYear();
@@ -82,6 +117,7 @@ function setWarn(msg, ok=false){
   warn.style.color = ok ? "rgba(180,255,210,.85)" : "rgba(255,220,220,.85)";
 }
 
+/* ====== Grid ====== */
 function renderStayGrid(){
   if(!planetGrid) return;
   planetGrid.innerHTML = "";
@@ -102,51 +138,69 @@ function renderStayGrid(){
   });
 }
 
+/* ====== Modal aç/kapat ====== */
 function openPlanet(p){
   selectedPlanet = p;
-  mTitle.textContent = `${p.name} — Rezervasyon`;
+  if(mTitle) mTitle.textContent = `${p.name} — Rezervasyon`;
 
   const t = isoToday();
-  checkin.min = t;
-  checkout.min = addDays(t,1);
-  checkin.value = t;
-  checkout.value = addDays(t,1);
-  guests.value = "2";
+  if(checkin){
+    checkin.min = t;
+    checkin.value = t;
+  }
+  if(checkout){
+    checkout.min = addDays(t,1);
+    checkout.value = addDays(t,1);
+  }
+  if(guests) guests.value = "2";
 
-  // 4 foto
-  const photos = photoSet(p.id);
-  mainPic.style.backgroundImage = photos[0];
-  thumbs.innerHTML = "";
-  photos.forEach((bg, i)=>{
-    const d=document.createElement("div");
-    d.className="thumb";
-    d.style.backgroundImage = bg;
-    d.title = `Fotoğraf ${i+1}`;
-    d.addEventListener("click", ()=> mainPic.style.backgroundImage = bg);
-    thumbs.appendChild(d);
-  });
+  const photos = photoSet();
+  if(mainPic) mainPic.style.backgroundImage = photos[0];
+
+  if(thumbs){
+    thumbs.innerHTML = "";
+    photos.forEach((bg, i)=>{
+      const d=document.createElement("div");
+      d.className="thumb";
+      d.style.backgroundImage = bg;
+      d.title = `Fotoğraf ${i+1}`;
+      d.addEventListener("click", ()=> { if(mainPic) mainPic.style.backgroundImage = bg; });
+      thumbs.appendChild(d);
+    });
+  }
 
   recalc();
-  modal.classList.add("open");
+  if(modal) modal.classList.add("open");
 }
 
 function closeModal(){
-  modal.classList.remove("open");
+  if(modal) modal.classList.remove("open");
   selectedPlanet = null;
 }
 
 if(mClose) mClose.addEventListener("click", closeModal);
 if(modal) modal.addEventListener("click",(e)=>{ if(e.target===modal) closeModal(); });
 
+/* ====== Hesaplama + doluluk kontrolü ====== */
 function recalc(){
   if(!selectedPlanet) return;
+  if(!checkin || !checkout || !guests || !totalEl) return;
+
   const inD = checkin.value;
   const outD = checkout.value;
-  const g = parseInt(guests.value||"1",10);
+  const gRaw = parseInt(guests.value||"1",10);
+  const g = Math.max(1, Math.min(gRaw, MAX_GUESTS));
 
   if(!inD || !outD){ totalEl.textContent="0 TL"; setWarn("Tarih seçmelisin."); return; }
+
   const nights = diffNights(inD,outD);
   if(nights<=0){ totalEl.textContent="0 TL"; setWarn("Çıkış tarihi girişten sonra olmalı."); return; }
+
+  if(!isRangeAvailable(selectedPlanet.id, inD, outD)){
+    totalEl.textContent="0 TL";
+    setWarn("Bu tarihler dolu. Başka tarih seç.");
+    return;
+  }
 
   const total = nights * g * PRICE_PER_PERSON_PER_NIGHT;
   totalEl.textContent = fmtTL(total);
@@ -155,46 +209,75 @@ function recalc(){
 
 if(checkin) checkin.addEventListener("change",()=>{
   const minOut = addDays(checkin.value,1);
-  checkout.min = minOut;
-  if(checkout.value < minOut) checkout.value = minOut;
+  if(checkout){
+    checkout.min = minOut;
+    if(checkout.value < minOut) checkout.value = minOut;
+  }
   recalc();
 });
 if(checkout) checkout.addEventListener("change", recalc);
 if(guests) guests.addEventListener("change", recalc);
 
-// Ödeme (şimdilik WhatsApp ile “Ödeme başlat” mesajı)
-// PayTR bağlayınca burayı gerçek ödeme linkine çevireceğiz.
+/* ====== Ödeme varsay + kilitle + WhatsApp ====== */
+function handlePaymentAssumed(){
+  if(!selectedPlanet) return;
+
+  const inD = checkin?.value;
+  const outD = checkout?.value;
+  if(!inD || !outD){ setWarn("Tarih seçmelisin."); return; }
+
+  const nights = diffNights(inD, outD);
+  if(nights<=0){ setWarn("Çıkış tarihi girişten sonra olmalı."); return; }
+
+  if(!isRangeAvailable(selectedPlanet.id, inD, outD)){
+    setWarn("Bu tarihler dolu. Başka tarih seç.");
+    return;
+  }
+
+  const fullname = document.getElementById("fullname")?.value?.trim() || "";
+  const email = document.getElementById("email")?.value?.trim() || "";
+  const phone = document.getElementById("phone")?.value?.trim() || "";
+  const tc = document.getElementById("tc")?.value?.trim() || "";
+  const address = document.getElementById("address")?.value?.trim() || "";
+
+  if(tc && tc.length !== 11){ setWarn("TC Kimlik No 11 hane olmalı."); return; }
+
+  // KİLİTLE
+  lockDatesAfterPayment(selectedPlanet.id, inD, outD);
+
+  alert("Ödeme alındı varsayıldı ✅\nTarihler kilitlendi.");
+
+  const msg = encodeURIComponent(
+    `ÖDEME ALINDI ✅\n`+
+    `Gezegen: ${selectedPlanet.name}\n`+
+    `Giriş: ${inD}\n`+
+    `Çıkış: ${outD}\n`+
+    `Kişi: ${guests?.value || ""}\n`+
+    (fullname ? `Ad Soyad: ${fullname}\n` : "")+
+    (email ? `E-posta: ${email}\n` : "")+
+    (phone ? `Telefon: ${phone}\n` : "")+
+    (tc ? `TC: ${tc}\n` : "")+
+    (address ? `Adres: ${address}\n` : "")+
+    `Toplam: ${totalEl?.textContent || ""}`
+  );
+  window.open(WA + msg, "_blank", "noopener");
+
+  closeModal();
+  renderStayGrid();
+}
+
 if(form){
   form.addEventListener("submit",(e)=>{
     e.preventDefault();
-    if(!selectedPlanet) return;
-
-    // Basit kontrol
-    const fullname = document.getElementById("fullname").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const tc = document.getElementById("tc").value.trim();
-    const address = document.getElementById("address").value.trim();
-
-    if(tc.length !== 11){ setWarn("TC Kimlik No 11 hane olmalı."); return; }
-
-    const msg = encodeURIComponent(
-      `ÖDEME BAŞLAT / ALLTAYF STAY\n`+
-      `Gezegen: ${selectedPlanet.name}\n`+
-      `Giriş: ${checkin.value}\n`+
-      `Çıkış: ${checkout.value}\n`+
-      `Kişi: ${guests.value}\n`+
-      `Ad Soyad: ${fullname}\n`+
-      `E-posta: ${email}\n`+
-      `Telefon: ${phone}\n`+
-      `TC: ${tc}\n`+
-      `Adres: ${address}\n`+
-      `Toplam: ${totalEl.textContent}\n`+
-      `Not: PayTR ödeme linki gönder.`
-    );
-    window.open(WA + msg, "_blank", "noopener");
+    handlePaymentAssumed();
+  });
+}
+if(payBtn){
+  payBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+    handlePaymentAssumed();
   });
 }
 
-renderStayGrid();
-
+/* ====== Başlat ====== */
+if(planetGrid) renderStayGrid();
