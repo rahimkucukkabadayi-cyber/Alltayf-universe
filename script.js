@@ -62,19 +62,19 @@ const form = document.getElementById("form");
 const payTotalEl = document.getElementById("payTotal") || document.querySelector(".paybar-total");
 
 // Eğer ayrı buton kullandıysan desteklesin
-const payBtn = document.getElementById("payBtn");
+const payBtn = document.getElementById("payBtn") || document.querySelector(".paybar-btn");
 
 let selectedPlanet = null;
 
-/* ====== Tiny house gezegenleri + özel kartlar (cover görseller bağlı) ====== */
+/* ====== Tiny house gezegenleri + özel kartlar ====== */
 const TINY_PLANETS = [
   // ÖZEL KARTLAR
-  { id:"sun",      name:"Güneş",       mini:"Merkez", cls:"planet-sun",    cover:"img/gunes.png" },
-  { id:"moon",     name:"Ay",          mini:"Yoldaş", cls:"planet-moon",   cover:"img/yildiz.png" }, // şimdilik
-  { id:"ship",     name:"Uzay Gemisi", mini:"Geçit",  cls:"planet-ship",   cover:"img/uzay-gemisi.png" },
-  { id:"antim",    name:"Antimadde",   mini:"Eşik",   cls:"planet-antim",  cover:"img/antimadde.png" },
+  { id:"sun",   name:"Güneş",       mini:"Merkez", cls:"planet-sun",   cover:"img/gunes.png" },
+  { id:"moon",  name:"Ay",          mini:"Yoldaş", cls:"planet-moon",  cover:"img/yildiz.png" }, // şimdilik
+  { id:"ship",  name:"Uzay Gemisi", mini:"Geçit",  cls:"planet-ship",  cover:"img/uzay-gemisi.png" },
+  { id:"antim", name:"Antimadde",   mini:"Eşik",   cls:"planet-antim", cover:"img/antimadde.png" },
 
-  // GEZEGENLER (elindeki alltayf görselleri ile)
+  // GEZEGENLER (tayf görselleri ile)
   { id:"mercury", name:"Merkür",  mini:"Hız",   cls:"planet-mercury", cover:"img/alltayf-tech.png" },
   { id:"venus",   name:"Venüs",   mini:"Sis",   cls:"planet-venus",   cover:"img/alltayf-aura.png" },
   { id:"earth",   name:"Dünya",   mini:"Yaşam", cls:"planet-earth",   cover:"img/alltayf-farm.png" },
@@ -87,8 +87,7 @@ const TINY_PLANETS = [
 ];
 
 /* ====== 4 foto seti ======
-   - Her gezegen için: 1) kendi cover'ı + 3 kozmik görsel
-   - Arka plan dosyan: img/bg-universe.jpg
+   Her kart için: 1) kendi cover'ı + 3 kozmik görsel
 */
 function photoSet(p){
   const core = p?.cover || "img/bg-universe.jpg";
@@ -100,10 +99,10 @@ function photoSet(p){
   ];
 
   const overlays = [
-    `linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.55)), radial-gradient(circle at 35% 35%, rgba(255,255,255,.20), transparent 55%)`,
-    `linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.60)), radial-gradient(circle at 70% 30%, rgba(255,255,255,.18), transparent 60%)`,
-    `linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.58)), radial-gradient(circle at 50% 60%, rgba(255,255,255,.16), transparent 55%)`,
-    `linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.62)), radial-gradient(circle at 25% 70%, rgba(255,255,255,.14), transparent 55%)`,
+    `linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.45))`,
+    `linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.50))`,
+    `linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.48))`,
+    `linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,.55))`,
   ];
 
   return imgs.map((src, i)=> `${overlays[i]}, url("${src}")`);
@@ -142,6 +141,7 @@ function setWarn(msg, ok=false){
 function renderStayGrid(){
   if(!planetGrid) return;
   planetGrid.innerHTML = "";
+
   TINY_PLANETS.forEach(p=>{
     const a=document.createElement("a");
     a.className="card10";
@@ -157,6 +157,7 @@ function renderStayGrid(){
       <div class="card10-img ${p.cls}" style="${bgStyle}"></div>
       <div class="card10-bot">Tiny house • seç ve incele</div>
     `;
+
     a.addEventListener("click",(e)=>{ e.preventDefault(); openPlanet(p); });
     planetGrid.appendChild(a);
   });
@@ -217,7 +218,7 @@ function recalc(){
 
   if(!inD || !outD){
     totalEl.textContent="0 TL";
-    if(payTotalEl) payTotalEl.textContent = "0 TL";
+    if(payTotalEl) payTotalEl.textContent="0 TL";
     setWarn("Tarih seçmelisin.");
     return;
   }
@@ -225,14 +226,14 @@ function recalc(){
   const nights = diffNights(inD,outD);
   if(nights<=0){
     totalEl.textContent="0 TL";
-    if(payTotalEl) payTotalEl.textContent = "0 TL";
+    if(payTotalEl) payTotalEl.textContent="0 TL";
     setWarn("Çıkış tarihi girişten sonra olmalı.");
     return;
   }
 
   if(!isRangeAvailable(selectedPlanet.id, inD, outD)){
     totalEl.textContent="0 TL";
-    if(payTotalEl) payTotalEl.textContent = "0 TL";
+    if(payTotalEl) payTotalEl.textContent="0 TL";
     setWarn("Bu tarihler dolu. Başka tarih seç.");
     return;
   }
@@ -280,7 +281,6 @@ function handlePaymentAssumed(){
 
   if(tc && tc.length !== 11){ setWarn("TC Kimlik No 11 hane olmalı."); return; }
 
-  // KİLİTLE
   lockDatesAfterPayment(selectedPlanet.id, inD, outD);
 
   alert("Ödeme alındı varsayıldı ✅\nTarihler kilitlendi.");
